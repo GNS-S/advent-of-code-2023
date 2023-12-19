@@ -33,12 +33,7 @@ def main():
                     op = next(op for op in possible_ops if op in rule)
                     attr, value = rule.split(op)
 
-                    lower, higher = split_ranges(ranges, attr, op, int(value))
-                    match op:
-                        case '<':
-                            keep, push = higher, lower
-                        case '>':
-                            keep, push = lower, higher
+                    keep, push = split_ranges(ranges, attr, op, int(value))
 
                     if push:
                         Q.append((on_pass, push))
@@ -49,13 +44,17 @@ def main():
         print(total)
 
 def split_ranges(ranges: dict, attr: str, op: str, value: int, START=1, END=4000) -> tuple:
-    deltas_by_op = {
-        '<': (-1, 0),
-        '>': ( 0, 1)
+    # delta start, delta end, reverse return order
+    transforms_by_op = {
+        '<': (-1, 0, True),
+        '>': ( 0, 1, False)
     }
-    ds, de = deltas_by_op[op]
+    ds, de, reverse = transforms_by_op[op]
     op_ranges = [(START, value + ds), (value + de, END)]
 
+    if reverse:
+        op_ranges.reverse()
+    
     return tuple(intersect(ranges, attr, r) for r in op_ranges)
 
 def intersect(ranges: dict, attr: str, op_range: tuple) -> dict | None:
