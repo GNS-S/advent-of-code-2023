@@ -3,7 +3,7 @@ from part1 import parse_input
 from math import prod
 
 def main():
-    INPUT_PATH = './i.txt'
+    INPUT_PATH = './input.txt'
 
     with open(INPUT_PATH) as f:
         flows, _ = parse_input(f)
