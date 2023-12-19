@@ -6,5 +6,5 @@ Puzzle texts and inputs can be found at [https://adventofcode.com/2023](https://
 
 Every `{number of day}` folder expects an additional file inside titled `input.txt` with the input.
 
-To run, navigate to the day folder and run the appropriate .py file for the part.
+To run: navigate to a day folder, create and fill `input.txt` and run the appropriate part file via python e.g. `python3 part{1 or 2}.py`.
 
