@@ -40,9 +40,9 @@ def main():
                         case '>':
                             keep, push = lower, higher
 
-                    if push != None:
+                    if push:
                         Q.append((on_pass, push))
-                    if keep == None:
+                    if keep is None:
                         break
                     ranges = keep
                         

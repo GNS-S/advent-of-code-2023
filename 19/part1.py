@@ -30,7 +30,7 @@ def main():
                         if apply[op](part[attr], required):
                             next_state = on_pass
 
-                    if next_state != None:
+                    if next_state:
                         state = next_state
                         if state == 'A':
                             total += sum(part.values())
