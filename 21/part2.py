@@ -11,7 +11,7 @@ def main():
         assert len(grid) == len(grid[0])
         size = len(grid)
 
-        #https://en.wikipedia.org/wiki/Newton_polynomial#Newton_forward_divided_difference_formula
+        # https://en.wikipedia.org/wiki/Newton_polynomial#Newton_forward_divided_difference_formula
         goal = 26501365
         n = goal // size
         remainder = goal % size
