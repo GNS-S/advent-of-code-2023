@@ -10,6 +10,11 @@ def main():
 
         assert len(grid) == len(grid[0])
         size = len(grid)
+        
+        r, c = start
+        empty_row = all([col != '#' for col in grid[r]])
+        empty_col = all([row[c] != '#' for row in grid])
+        assert empty_row or empty_col
 
         # https://en.wikipedia.org/wiki/Newton_polynomial#Newton_forward_divided_difference_formula
         goal = 26501365
