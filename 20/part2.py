@@ -1,7 +1,7 @@
 from part1 import parse_input:
 
 from collections import deque
-from math import prod, lcm
+from math import lcm
 
 # The solution assumes and verifies a specific input shape - subgraphs created by fliplop
 # chains feeding NAND gates, which are then collected by a single NAND and set to 'rx'.
