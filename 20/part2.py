@@ -4,7 +4,7 @@ from collections import deque
 from math import lcm
 
 # The solution assumes and verifies a specific input shape - subgraphs created by fliplop
-# chains feeding NAND gates, which are then collected by a single NAND and set to 'rx'.
+# chains feeding NAND gates, which are then collected by a single NAND and sent to 'rx'.
 # A more elegant solution would involve interpreting flipflop chains as bits to determine
 # cycle lengths (google: MOD Counter), but it would still be making assumptions about the
 # input 
