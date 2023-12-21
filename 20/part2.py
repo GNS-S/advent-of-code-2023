@@ -1,4 +1,4 @@
-from part1 import parse_input:
+from part1 import parse_input
 
 from collections import deque
 from math import lcm
@@ -25,8 +25,10 @@ def main():
         assert all([modules[m]['type'] == '&' for m in watch])
 
         seen = {}
-
-        for i in range(1, 10000):
+        
+        i = 0 
+        while len(seen) != len(watch):
+            i += 1
             Q = deque([('button', 'broadcaster', 'L')])
 
             while Q:
