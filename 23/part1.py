@@ -88,7 +88,7 @@ def get_adjacent(maze: list, position: tuple) -> list[tuple]:
 def parse_input(file) -> list[list[chr]]:
     rows = []
 
-    for i, line in enumerate(file):
+    for line in file:
         rows.append(list(line.strip()))
 
     return rows
