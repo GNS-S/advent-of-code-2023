@@ -47,7 +47,7 @@ def main():
         # Here we mutter a little prayer to the floating point gods that this will be precise enough 
         print(floor(sum([x, y, z])))
 
-def matrix_row(hx1: int, hy1: int, hvx1: int, hvy1: int, hx2: int, hy2: int, hvx2: int, hvy2: int) -> list[int]:
+def matrix_row(hx1: int, hy1: int, hvx1: int, hvy1: int, hx2: int, hy2: int, hvx2: int, hvy2: int) -> tuple:
     x  =  hvy2 - hvy1
     y  = -hvx2 + hvx1
     vx = -hy2 + hy1 
