@@ -1,25 +1,20 @@
-from part1 import parse_input, intersect_xy
+from part1 import parse_input
 
-from math import ceil
+from itertools import combinations
+from math import floor
 import numpy as np
-from numpy.typing import NDArray
-from numpy.linalg import solve
 
-# https://www.reddit.com/r/adventofcode/comments/18pnycy/comment/kepu26z
-# 
-# Given the thrown rock has position p_R and velocity v_R and the i-th hailstone
-# p_i and v_i, we know that for every i at some time t_i that a collision occurs:
+# Given x, y, z, vx, vy, vz is the position and velocity of the throw
+#       hxi, hyi, hyz, hvxi, hvyi, hvzi is the position and  velocity of the i-th hailstone
 #
-# p_R + t_i*v_R = p_i + t_i*v_i
+# By subtracting the throws initial position and velocity from a hailstone we can create a system
+# where each hailstone passes through the origin point - meaning its new position is a multiple of its
+# new velocity. Representing this dependency for 2 dimensions looks like this:
 #
-# From here
-# 1. p_R - p_i == t_i*(v_i - v_R)
-# 2. (p_R - p_i) x (v_R - v_i) == t_i*(v_i - v_R) x (v_R - v_i) == 0
-# Since the cross product of a vector with itself is 0:
+# (hxi - x) / (hyi - y) = (hvxi - vx) / (hdyi - vy)
 #
-# (p_R - p_i) x (v_R - v_i) == 0
-# Then we can equate p_R and v_R to any two different pairs of indices to get a 6x6
-# system of linear equations for p_R and v_R (since they are common to every i)
+# By choosing 4 pairs of hailstones, filling in the values and subtracting the equations for each pair
+# we can populate a 4 row matrix to compute x, y, vx, vy - and repeat for y, z, vy, vz
 
 def main():
     INPUT_PATH = './input.txt'
@@ -27,45 +22,40 @@ def main():
     with open(INPUT_PATH) as f:
         stones = parse_input(f)
 
-        first_three = []
-        for stone in stones[:3]:
-            p, v = stone
-            first_three.append({
-                'p': np.array(p),
-                'v': np.array(v)
-            })
+        four_pairs = list(combinations(stones, 2))[:4]
 
-        h0, h1, h2 = first_three
+        Axy = []
+        Ayz = []
+        bxy = []
+        byz = []
+        for pair in four_pairs:
+            h1, h2 = pair
+            h1p, h1v = h1
+            h2p, h2v = h2
 
-        top_left = skew_symmetric_matrix(h0['v']) - skew_symmetric_matrix(h1['v'])
-        bottom_left = skew_symmetric_matrix(h0['v']) - skew_symmetric_matrix(h2['v'])
-        top_right = -skew_symmetric_matrix(h0['p']) + skew_symmetric_matrix(h1['p'])
-        bottom_right = -skew_symmetric_matrix(h0['p']) + skew_symmetric_matrix(h2['p'])
-        
-        top = np.concatenate((top_left, top_right), axis=1)
-        bottom = np.concatenate((bottom_left, bottom_right), axis=1)
+            xs, rhs = matrix_row(*h1p[:2], *h1v[:2], *h2p[:2], *h2v[:2])
+            Axy.append(xs)
+            bxy.append(rhs)
 
-        A = np.concatenate((top, bottom)) 
-        B = np.concatenate([
-            -np.cross(h0['p'], h0['v']) + np.cross(h1['p'], h1['v']),
-            -np.cross(h0['p'], h0['v']) + np.cross(h2['p'], h2['v'])
-        ])
+            xs, rhs = matrix_row(*h1p[1:], *h1v[1:], *h2p[1:], *h2v[1:])
+            Ayz.append(xs)
+            byz.append(rhs)
 
-        x, y, z, vx, vy, vz = solve(A, B)
-        
-        # Here pray to the floating point precision gods that ceiling this output will provide
-        # the correct answer. A more rational approach would be rewriting all these calculations
-        # using Python's own Decimal type. Feel free to do... that.
-        print(ceil(sum([x, y, z])))
+        x, y, vx, vy = np.linalg.solve(Axy, bxy)
+        y, z, vy, vz = np.linalg.solve(Ayz, byz)
 
-def skew_symmetric_matrix(vec3d: NDArray) -> NDArray:
-    i, j, k = vec3d
+        # Here we mutter a little prayer to the floating point gods that this will be precise enough 
+        print(floor(sum([x, y, z])))
 
-    return np.array([
-        [ 0, -k,  j],
-        [ k,  0, -i],
-        [-j,  i,  0]
-    ])
+def matrix_row(hx1: int, hy1: int, hvx1: int, hvy1: int, hx2: int, hy2: int, hvx2: int, hvy2: int) -> list[int]:
+    x  =  hvy2 - hvy1
+    y  = -hvx2 + hvx1
+    vx = -hy2 + hy1 
+    vy =  hx2 - hx1
+
+    rhs = hvx1 * hy1 - hvx2 * hy2 + hx2 * hvy2 - hx1 * hvy1
+
+    return [x, y, vx, vy], rhs
 
 if __name__ == '__main__':
     main()
